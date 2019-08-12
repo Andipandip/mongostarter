@@ -8,10 +8,12 @@ describe('Basic Create', async () => {
       .db(process.env.DB_NAME)
       .collection('videos');
   });
+
   // Delete collection videos
   afterAll(async () => {
     await videos.drop();
   });
+
   it('insertOne() method', async () => {
     const insertOneVideo = await videos.insertOne({
       name: 'Rambo 3',
@@ -45,5 +47,65 @@ describe('Basic Create', async () => {
       expect(e.errmsg).toContain('E11000 duplicate key error collection');
       console.log(e.errmsg);
     }
+  });
+  it('insertMany() method', async () => {
+    let megaManYears = [
+      1987,
+      1988,
+      1990,
+      1991,
+      1992,
+      1993,
+      1995,
+      1996,
+      2008,
+      2010
+    ];
+    let docs = megaManYears.map((year, idx) => {
+      return {
+        name: `Rambo ${idx + 1}`,
+        year
+      };
+    });
+    let insertResult = await videos.insertMany(docs);
+
+    expect(insertResult.insertedCount).toBe(10);
+
+    expect(Object.values(insertResult.insertedIds).length).toBe(10);
+    // cek
+    console.log(Object.values(insertResult.insertedIds));
+  });
+
+  it('Method updateOne() with upsert', async () => {
+    let upsertResult = await videos.updateOne(
+      {
+        name: 'Rambo 8u'
+      },
+      {
+        $set: {
+          name: 'Call Rambo',
+          year: '2018'
+        }
+      },
+      { upsert: true }
+    );
+
+    expect(upsertResult.result.nModified).toBe(0);
+    console.log('One Upsert', upsertResult.result);
+
+    upsertResult = await videos.updateOne(
+      { name: 'Rambo 8' },
+      // we'll update the year to 2018
+      {
+        $set: {
+          name: 'Call of Duty',
+          year: 2018
+        }
+      },
+      { upsert: true }
+    );
+    // we can see the second upsert result does not have an upserted key
+    console.log('second upsert result', upsertResult.result);
+    expect(upsertResult.result.nModified).toBe(1);
   });
 });
