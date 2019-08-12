@@ -34,7 +34,7 @@ describe('Basic Create', async () => {
 
     expect(insertOneVideo.insertedId).not.toBe(undefined);
 
-    console.log(insertOneVideo.insertedId);
+    //  console.log(insertOneVideo.insertedId);
 
     let { name, year } = await videos.findOne({
       _id: ObjectID(insertOneVideo.insertedId)
@@ -52,7 +52,7 @@ describe('Basic Create', async () => {
     } catch (e) {
       expect(e).not.toBeUndefined();
       expect(e.errmsg).toContain('E11000 duplicate key error collection');
-      console.log(e.errmsg);
+      //  console.log(e.errmsg);
     }
   });
   it('insertMany() method', async () => {
@@ -80,7 +80,7 @@ describe('Basic Create', async () => {
 
     expect(Object.values(insertResult.insertedIds).length).toBe(10);
     // cek
-    console.log(Object.values(insertResult.insertedIds));
+    // console.log(Object.values(insertResult.insertedIds));
   });
 
   it('updateOne() with upsert', async () => {
@@ -98,7 +98,7 @@ describe('Basic Create', async () => {
     );
 
     expect(upsertResult.result.nModified).toBe(0);
-    console.log('One Upsert', upsertResult.result);
+    //console.log('One Upsert', upsertResult.result);
 
     upsertResult = await videos.updateOne(
       { name: 'Rambo 8' },
@@ -112,7 +112,7 @@ describe('Basic Create', async () => {
       { upsert: true }
     );
     // we can see the second upsert result does not have an upserted key
-    console.log('second upsert result', upsertResult.result);
+    // console.log('second upsert result', upsertResult.result);
     expect(upsertResult.result.nModified).toBe(1);
   });
 });
