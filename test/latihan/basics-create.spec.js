@@ -1,19 +1,26 @@
 import { ObjectID } from 'mongodb';
 describe('Basic Create', async () => {
-  let videos; // collection initialized
+  /**
+   * Task Manager:
+   * 1.beforAll(){}
+   * 2.it() {}
+   * 3 afterAll(){}
+   */
+  let videos; // masih null
 
-  // Construct colletion videos
   beforeAll(async () => {
+    //inject videos
     videos = await global.mongoClient
       .db(process.env.DB_NAME)
       .collection('videos');
   });
 
-  // Delete collection videos
+  //  clean videos;
   afterAll(async () => {
     await videos.drop();
   });
 
+  // exec method
   it('insertOne() method', async () => {
     const insertOneVideo = await videos.insertOne({
       name: 'Rambo 3',
@@ -76,7 +83,7 @@ describe('Basic Create', async () => {
     console.log(Object.values(insertResult.insertedIds));
   });
 
-  it('Method updateOne() with upsert', async () => {
+  it('updateOne() with upsert', async () => {
     let upsertResult = await videos.updateOne(
       {
         name: 'Rambo 8u'
